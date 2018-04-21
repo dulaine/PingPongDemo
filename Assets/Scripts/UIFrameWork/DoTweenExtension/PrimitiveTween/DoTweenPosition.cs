@@ -1,0 +1,49 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using DG.Tweening;
+
+[Serializable]
+public class DoTweenPosition : BaseDoTween {
+
+    public Vector3 From;
+
+    public Vector3 To;
+
+    public override Sequence GetAnimationSequence()
+    {
+        uiAnimation = DOTween.Sequence();
+        if (delay > 0) uiAnimation.AppendInterval(delay);
+
+        Tweener tweener = GameUIUtility.DoMove(this.transform, From, To, duration);
+
+        //Animation Curve
+        if (animationCurve != null) tweener.SetEase(animationCurve);
+
+        //Loops
+        switch (style)
+        {
+            case Style.Once:
+                break;
+            case Style.Loop:
+                tweener.SetLoops(int.MaxValue, LoopType.Restart);
+                break;
+            case Style.PingPong:
+                tweener.SetLoops(int.MaxValue, LoopType.Yoyo);
+                break;
+        }
+
+        uiAnimation.Append(tweener);
+
+        ////结束回调
+        //if (OnComplete != null)
+        //{
+        //    uiAnimation.onComplete = () => { OnComplete.Play(); };
+        //}
+
+        return uiAnimation;
+    }
+
+
+}
